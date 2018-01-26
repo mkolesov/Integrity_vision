@@ -10,19 +10,16 @@ public class FileReader {
 
     private String rootAdress = "src/main/resources/";
     private ArrayList<String> wordList;
-    private Set<String> s;
-    //private ArrayList<String> containsWord;
     private HashMap<String, String> containsWord;;
-    private Set<String> concatenaedWords;
+    private Set<String> concatenatedWords;
     private String longestWord = "";
     private String secondLongestWord = "";
 
     public void process(String fileName){
         wordList = readFromFile(rootAdress+fileName);
         Iterator<String> iterator = wordList.iterator();
-        //containsWord = new ArrayList<String>();
         containsWord = new HashMap<String, String>();
-        concatenaedWords = new HashSet<String>();
+        concatenatedWords = new HashSet<String>();
         System.out.println("Starting processing....");
         int i = 0;
         int currentPercent = 0;
@@ -41,10 +38,13 @@ public class FileReader {
     }
 
     private void checkLenght(String word){
-        if (word.length() > longestWord.length()){
-            longestWord = word;
-        } else if (word.length() > secondLongestWord.length()){
+        if (word.length() > secondLongestWord.length()){
             secondLongestWord = word;
+        }
+        if (secondLongestWord.length() > longestWord.length()){
+            String tmp = longestWord;
+            longestWord = secondLongestWord;
+            secondLongestWord = tmp;
         }
     }
 
@@ -59,8 +59,11 @@ public class FileReader {
                     String createrWord = containsWord.get(checkWord);
                     //Проверка является заданное слово сокоренным кандидату или составным
                     if (!word.contains(createrWord)& !createrWord.contains(word)){
-                        concatenaedWords.add(checkWord);
-                        checkLenght(checkWord);
+                        if (!concatenatedWords.contains(checkWord)){
+                            checkLenght(checkWord);
+                            concatenatedWords.add(checkWord);
+
+                        }
                     }
                 } else {
                     containsWord.put(checkWord, word);
@@ -95,6 +98,6 @@ public class FileReader {
     }
 
     public int getConcatenetedWordsCount(){
-        return concatenaedWords.size();
+        return concatenatedWords.size();
     }
 }

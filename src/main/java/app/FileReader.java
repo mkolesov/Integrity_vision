@@ -85,42 +85,105 @@ public class FileReader {
         }
     }
 
+    private void rec(String word, String concat, int index){
+        Set<String> set = containsWord.get(word);
+        Iterator<String> setIterator1 = set.iterator();
+
+        while ( setIterator1.hasNext()) {
+            String s = setIterator1.next();
+            if (word.indexOf(s)==index){
+                concat = concat.concat(s);
+                if (word.equals(concat)){
+                    concatenatedWords.add(word);
+                    checkLenght(word);
+                    return;
+                }
+                rec(word, concat, s.length());
+            }
+        }
+    }
+
     private void getRes(){
         Iterator<String> mapIterator = containsWord.keySet().iterator();
         while (mapIterator.hasNext()) {
             String key = mapIterator.next();
-//            if (key.equals("catallycatscatses")){
+
+            rec(key, "", 0);
+//            Set<String> set = containsWord.get(key);
+//            Iterator<String> setIterator1 = set.iterator();
+//
+//            //new 2
+//            while ( setIterator1.hasNext()) {
+//                String s = setIterator1.next();
+
+
+            //new stuff
+            //if (key.equals("catsdogcat")){
+//            if (key.equals("electroencephalographically")){
 //                System.out.println("GOT YOu");
 //            };
-            Set<String> set = containsWord.get(key);
-            List<String> TESTset = new ArrayList<String>();
-            Iterator<String> setIterator1 = set.iterator();
-            while ( setIterator1.hasNext()) {
-                String word1 = setIterator1.next();
-                Iterator<String> setIterator2 = set.iterator();
-                boolean isInherit = false;
-                while (setIterator2.hasNext()) {
-                    String word2 = setIterator2.next();
-                    if (word2.contains(word1) & !word2.equals(word1) &
-                            key.indexOf(word1) == key.indexOf(word2)) {
-                        isInherit = true;
-                        break;
-                    }
-                }
-                if (!isInherit){
-                    TESTset.add(word1);
-                }
-            }
-            Comparator<String> my = new MyComparator();
-            Collections.sort(TESTset, my);
-            String tmp = key;
-            for (String s:TESTset){
-                tmp = tmp.replace(s, "");
-            }
-            if(tmp.length()==0){
-                concatenatedWords.add(key);
-                checkLenght(key);
-            }
+//            int [] mass = new int[key.length()];
+//            Arrays.fill(mass, 0);
+//            while ( setIterator1.hasNext()) {
+//                String s = setIterator1.next();
+//
+//
+//                int index = key.indexOf(s);
+//                while (index>-1){
+//                    Arrays.fill(mass, index, index+s.length(), 1);
+//                    index = key.indexOf(s, index+s.length());
+//                }
+//
+//
+//            }
+//
+//            Arrays.sort(mass);
+//            if (Arrays.binarySearch(mass, 0)<0){
+//                concatenatedWords.add(key);
+//                checkLenght(key);
+//            }
+
+            //old SHIET
+//            List<String> TESTset = new ArrayList<String>();
+//            while ( setIterator1.hasNext()) {
+//                String word1 = setIterator1.next();
+//                Iterator<String> setIterator2 = set.iterator();
+//                boolean isInherit = false;
+//                while (setIterator2.hasNext()) {
+//                    String word2 = setIterator2.next();
+//                    if (word2.contains(word1) & !word2.equals(word1) &
+//                            key.indexOf(word1) == key.indexOf(word2)) {
+//                        isInherit = true;
+//                        break;
+//                    }
+//                }
+//                if (!isInherit){
+//                    TESTset.add(word1);
+//                }
+//            }
+//            Comparator<String> my = new MyComparator();
+//            Collections.sort(TESTset, my);
+//            String tmp = key;
+//            for (String s:TESTset){
+//                tmp = tmp.replace(s, "");
+//            }
+//            if(tmp.length()==0){
+//                concatenatedWords.add(key);
+//                checkLenght(key);
+//            }
+
+
+
+
+
+
+//             if (key.equals("ethylenediaminetetraacetates")){
+//                System.out.println("GOT YOu");
+//            };
+//            if(TESTset.size()>1){
+//                concatenatedWords.add(key);
+//                checkLenght(key);
+//            }
         }
 
 //            while ( setIterator1.hasNext()){
@@ -153,9 +216,12 @@ public class FileReader {
         try {
             RandomAccessFile randomAccessFile = new RandomAccessFile(fileAdress, "r");
             String word = randomAccessFile.readLine();
-            while (word != null){
+            while (word != null & word.length()>0){
                 result.add(word);
                 word = randomAccessFile.readLine();
+//                if(word.length()==27){
+//                    System.out.println(27);
+//                }
             }
             randomAccessFile.close();
         } catch (java.io.IOException e) {

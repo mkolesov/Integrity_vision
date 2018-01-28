@@ -11,16 +11,15 @@ public class FileReader {
     private String rootAdress = "src/main/resources/";
     private ArrayList<String> wordList;
     private HashMap<String, Set<String>> containsWord;
-    private HashMap<String, Set<String>> containsWord2;
     private Set<String> concatenatedWords;
     private String longestWord = "";
     private String secondLongestWord = "";
+    private Set<String> set;
 
     public void process(String fileName){
         wordList = readFromFile(rootAdress+fileName);
         Iterator<String> iterator = wordList.iterator();
         containsWord = new HashMap<String, Set<String>>();
-        containsWord2 = new HashMap<String, Set<String>>();
         concatenatedWords = new HashSet<String>();
         System.out.println("Starting processing....");
         int i = 0;
@@ -85,29 +84,38 @@ public class FileReader {
         }
     }
 
-    private void rec(String word, String concat, int index){
-        Set<String> set = containsWord.get(word);
+    private boolean rec(String word, String concat, int index){
+
         Iterator<String> setIterator1 = set.iterator();
 
         while ( setIterator1.hasNext()) {
             String s = setIterator1.next();
-            if (word.indexOf(s)==index){
+            if (word.indexOf(s, index) == index) {
                 concat = concat.concat(s);
-                if (word.equals(concat)){
+                if (word.equals(concat)) {
                     concatenatedWords.add(word);
                     checkLenght(word);
-                    return;
+                    return true;
                 }
-                rec(word, concat, s.length());
+                if (rec(word, concat, index + s.length())) {
+                    return true;
+                } else {
+                    concat = concat.substring(0, index);
+                }
             }
+
+//            if (word.indexOf(s, index)<0){
+//                continue;
+//            }
         }
+        return false;
     }
 
     private void getRes(){
         Iterator<String> mapIterator = containsWord.keySet().iterator();
         while (mapIterator.hasNext()) {
             String key = mapIterator.next();
-
+            set = containsWord.get(key);
             rec(key, "", 0);
 //            Set<String> set = containsWord.get(key);
 //            Iterator<String> setIterator1 = set.iterator();
@@ -143,7 +151,7 @@ public class FileReader {
 //                checkLenght(key);
 //            }
 
-            //old SHIET
+            //old
 //            List<String> TESTset = new ArrayList<String>();
 //            while ( setIterator1.hasNext()) {
 //                String word1 = setIterator1.next();
@@ -216,7 +224,7 @@ public class FileReader {
         try {
             RandomAccessFile randomAccessFile = new RandomAccessFile(fileAdress, "r");
             String word = randomAccessFile.readLine();
-            while (word != null & word.length()>0){
+            while (word != null && word.length()>0){
                 result.add(word);
                 word = randomAccessFile.readLine();
 //                if(word.length()==27){
